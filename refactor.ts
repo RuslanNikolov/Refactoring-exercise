@@ -7,12 +7,6 @@ export interface Item {
 export class GildedRose {
   constructor(public items: Item[]) {}
 
-  knownItemNames = [
-    "Aged Brie",
-    "Backstage passes to a TAFKAL80ETC concert",
-    "Sulfuras, Hand of Ragnaros"
-  ];
-
   getUpdatedItems(): Item[] {
     return this.items.map(item => {
       if (this.isUnknownItem(item)) item.quality--;
@@ -51,6 +45,11 @@ export class GildedRose {
   }
 
   isUnknownItem = (item: Item): boolean => {
-    return item.quality > 0 && !this.knownItemNames.includes[item.name];
+    let knownItemNames = [
+      "Aged Brie",
+      "Backstage passes to a TAFKAL80ETC concert",
+      "Sulfuras, Hand of Ragnaros"
+    ];
+    return item.quality > 0 && !knownItemNames.includes[item.name];
   };
 }
