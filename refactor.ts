@@ -33,6 +33,7 @@ export class GildedRose {
     }
     return item;
   }
+
   updateBackstagePassItem(item: Item): void {
     if (item.name === "Backstage passes to a TAFKAL80ETC concert" && item.quality < 50) {
       if (item.sellIn >= 6 && item.sellIn < 11) {
