@@ -7,7 +7,25 @@ export interface Item {
 export class GildedRose {
   constructor(public items: Item[]) {}
 
-  getModifiedFromSellin(item): Item {
+  knownItemNames = [
+    "Aged Brie",
+    "Backstage passes to a TAFKAL80ETC concert",
+    "Sulfuras, Hand of Ragnaros"
+  ];
+
+  getUpdatedItems(): Item[] {
+    return this.items.map(item => {
+      if (this.isUnknownItem(item)) item.quality--;
+
+      this.updateBackstagePassItem(item);
+
+      if (item.name !== "Sulfuras, Hand of Ragnaros") item.sellIn--;
+
+      return this.getUpdatedFromSellin(item);
+    });
+  }
+
+  getUpdatedFromSellin(item): Item {
     if (item.sellIn < 0) {
       if (item.name === "Aged Brie" && item.quality < 50) {
         item.quality++;
@@ -21,7 +39,7 @@ export class GildedRose {
     }
     return item;
   }
-  modifyIfBackstagePassItem(item: Item): void {
+  updateBackstagePassItem(item: Item): void {
     if (item.name === "Backstage passes to a TAFKAL80ETC concert" && item.quality < 50) {
       if (item.sellIn >= 6 && item.sellIn < 11) {
         item.quality += 2;
@@ -32,25 +50,7 @@ export class GildedRose {
     }
   }
 
-  updateQuality(): Item[] {
-    let knownItemNames = [
-      "Aged Brie",
-      "Backstage passes to a TAFKAL80ETC concert",
-      "Sulfuras, Hand of Ragnaros"
-    ];
-
-    let isUnknownItem = (item: Item): boolean => {
-      return item.quality > 0 && !knownItemNames.includes[item.name];
-    };
-
-    return this.items.map(item => {
-      if (isUnknownItem(item)) item.quality--;
-
-      this.modifyIfBackstagePassItem(item);
-
-      if (item.name !== "Sulfuras, Hand of Ragnaros") item.sellIn--;
-
-      return this.getModifiedFromSellin(item);
-    });
-  }
+  isUnknownItem = (item: Item): boolean => {
+    return item.quality > 0 && !this.knownItemNames.includes[item.name];
+  };
 }
