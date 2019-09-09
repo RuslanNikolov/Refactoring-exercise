@@ -21,8 +21,8 @@ export class GildedRose {
     }
     return item;
   }
-  modifyBackstagePassItem(item: Item): void {
-    if (item.quality < 50) {
+  modifyIfBackstagePassItem(item: Item): void {
+    if (item.name === "Backstage passes to a TAFKAL80ETC concert" && item.quality < 50) {
       if (item.sellIn >= 6 && item.sellIn < 11) {
         item.quality += 2;
       }
@@ -39,12 +39,15 @@ export class GildedRose {
       "Sulfuras, Hand of Ragnaros"
     ];
 
-    return this.items.map(item => {
-      if (item.quality > 0 && !knownItemNames.includes[item.name]) item.quality--;
+    let isUnknownItem = (item: Item): boolean => {
+      return item.quality > 0 && !knownItemNames.includes[item.name];
+    };
 
-      if (item.name === "Backstage passes to a TAFKAL80ETC concert") {
-        this.modifyBackstagePassItem(item);
-      }
+    return this.items.map(item => {
+      if (isUnknownItem(item)) item.quality--;
+
+      this.modifyIfBackstagePassItem(item);
+
       if (item.name !== "Sulfuras, Hand of Ragnaros") item.sellIn--;
 
       return this.getModifiedFromSellin(item);
