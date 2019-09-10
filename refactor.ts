@@ -10,51 +10,54 @@ export class GildedRose {
     constructor(public items: Item[]) { }
 
     updateQuality(): Item[] {
-        const getUpdatedUnknowItem = (item: Item): Item => {
+        const updateUnknownItem = (item: Item): Item => {
+            let newItem = { ...item }
             const knownItemNames = [
                 "Aged Brie",
                 "Backstage passes to a TAFKAL80ETC concert",
                 "Sulfuras, Hand of Ragnaros"
             ];
-            if (item.quality > 0 && !knownItemNames.includes[item.name])
-                item.quality--;
+            if (newItem.quality > 0 && !knownItemNames.includes[newItem.name])
+                newItem.quality--;
 
-            return item;
+            return newItem;
         }
-        const getUpdatedBackstagePassItem = (item: Item): Item => {
-            if (item.name === "Backstage passes to a TAFKAL80ETC concert" && item.quality < 50) {
-                if (item.sellIn >= 6 && item.sellIn < 11) {
-                    item.quality += 2;
+        const updateBackstagePassItem = (item: Item): Item => {
+            let newItem = { ...item }
+
+            if (newItem.name === "Backstage passes to a TAFKAL80ETC concert" && newItem.quality < 50) {
+                if (newItem.sellIn >= 6 && newItem.sellIn < 11) {
+                    newItem.quality += 2;
                 }
-                if (item.sellIn < 6) {
-                    item.quality += 3;
+                if (newItem.sellIn < 6) {
+                    newItem.quality += 3;
                 }
             }
-            return item;
+            return newItem;
         };
 
-        const getUpdatedFromSellin = (item: Item): Item => {
-            if (item.name !== "Sulfuras, Hand of Ragnaros") item.sellIn--;
+        const updateFromSellin = (item: Item): Item => {
+            let newItem = { ...item }
+            if (newItem.name !== "Sulfuras, Hand of Ragnaros") newItem.sellIn--;
 
-            if (item.sellIn < 0) {
-                if (item.name === "Aged Brie" && item.quality < 50) {
-                    item.quality++;
+            if (newItem.sellIn < 0) {
+                if (newItem.name === "Aged Brie" && newItem.quality < 50) {
+                    newItem.quality++;
                 }
-                if (item.name === "Backstage passes to a TAFKAL80ETC concert") {
-                    item.quality = 0;
+                if (newItem.name === "Backstage passes to a TAFKAL80ETC concert") {
+                    newItem.quality = 0;
                 }
-                if (item.name !== "Sulfuras, Hand of Ragnaros" && item.quality > 0) {
-                    item.quality--;
+                if (newItem.name !== "Sulfuras, Hand of Ragnaros" && newItem.quality > 0) {
+                    newItem.quality--;
                 }
             }
-            return item;
+            return newItem;
         };
-
 
         return this.items.map(item => pipe(
-            getUpdatedUnknowItem,
-            getUpdatedBackstagePassItem,
-            getUpdatedFromSellin
+            updateUnknownItem,
+            updateBackstagePassItem,
+            updateFromSellin
         )(item)
         );
     }
