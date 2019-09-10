@@ -4,20 +4,24 @@ export interface Item {
     quality: number;
 }
 
+const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
+
 export class GildedRose {
     constructor(public items: Item[]) { }
 
     updateQuality(): Item[] {
-        const isUnknownItem = (item: Item): boolean => {
+        const getUpdatedUnknowItem = (item: Item): Item => {
             const knownItemNames = [
                 "Aged Brie",
                 "Backstage passes to a TAFKAL80ETC concert",
                 "Sulfuras, Hand of Ragnaros"
             ];
-            return item.quality > 0 && !knownItemNames.includes[item.name];
-        };
+            if (item.quality > 0 && !knownItemNames.includes[item.name])
+                item.quality--;
 
-        const updateBackstagePassItem = (item: Item): void => {
+            return item;
+        }
+        const getUpdatedBackstagePassItem = (item: Item): Item => {
             if (item.name === "Backstage passes to a TAFKAL80ETC concert" && item.quality < 50) {
                 if (item.sellIn >= 6 && item.sellIn < 11) {
                     item.quality += 2;
@@ -26,8 +30,12 @@ export class GildedRose {
                     item.quality += 3;
                 }
             }
+            return item;
         };
-        const getUpdatedFromSellin = (item): Item => {
+
+        const getUpdatedFromSellin = (item: Item): Item => {
+            if (item.name !== "Sulfuras, Hand of Ragnaros") item.sellIn--;
+
             if (item.sellIn < 0) {
                 if (item.name === "Aged Brie" && item.quality < 50) {
                     item.quality++;
@@ -42,14 +50,12 @@ export class GildedRose {
             return item;
         };
 
-        return this.items.map(item => {
-            if (isUnknownItem(item)) item.quality--;
 
-            updateBackstagePassItem(item);
-
-            if (item.name !== "Sulfuras, Hand of Ragnaros") item.sellIn--;
-
-            return getUpdatedFromSellin(item);
-        });
+        return this.items.map(item => pipe(
+            getUpdatedUnknowItem,
+            getUpdatedBackstagePassItem,
+            getUpdatedFromSellin
+        )(item)
+        );
     }
 }
